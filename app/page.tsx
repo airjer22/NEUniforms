@@ -26,8 +26,8 @@ export default function Home() {
             src="/northern-eagles-logo.png"
             alt="Northern Eagles Logo"
             fill
-            style={{ objectFit: 'contain' }}
             priority
+            className="object-contain"
           />
         </div>
 
