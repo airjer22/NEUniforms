@@ -41,6 +41,8 @@ export interface Database {
           borrower_name: string
           borrower_email: string
           school: string
+          sport: string
+          gender: string
           quantity: number
           expected_return_date: string
           actual_return_date: string | null
@@ -57,6 +59,8 @@ export interface Database {
           borrower_name: string
           borrower_email: string
           school: string
+          sport: string
+          gender: string
           quantity: number
           expected_return_date: string
           actual_return_date?: string | null
@@ -72,6 +76,8 @@ export interface Database {
           borrower_name?: string
           borrower_email?: string
           school?: string
+          sport?: string
+          gender?: string
           quantity?: number
           expected_return_date?: string
           actual_return_date?: string | null

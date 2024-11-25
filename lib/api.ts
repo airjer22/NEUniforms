@@ -38,6 +38,8 @@ export async function createBorrowing(data: {
       borrower_name: data.borrowerName,
       borrower_email: data.borrowerEmail,
       school: data.school,
+      sport: data.sport,
+      gender: data.gender,
       quantity: data.quantity,
       expected_return_date: data.expectedReturnDate.toISOString(),
       status: 'active'
@@ -91,7 +93,10 @@ export async function processReturn(
   // Get the transaction
   const { data: transaction, error: fetchError } = await supabase
     .from('transactions')
-    .select('*')
+    .select(`
+      *,
+      inventory:inventory_id (*)
+    `)
     .eq('id', transactionId)
     .single();
 
@@ -118,7 +123,7 @@ export async function processReturn(
   const { error: inventoryError } = await supabase
     .from('inventory')
     .update({
-      available_quantity: supabase.rpc('increment', { x: transaction.quantity })
+      available_quantity: transaction.inventory.available_quantity + transaction.quantity
     })
     .eq('id', transaction.inventory_id);
 
@@ -190,9 +195,7 @@ export async function getTransactionHistory() {
     .select(`
       *,
       inventory:inventory_id (
-        uniform_type,
-        sport,
-        gender
+        uniform_type
       )
     `)
     .order('created_at', { ascending: false });
@@ -208,17 +211,19 @@ export async function getAnalytics(
   period: 'weekly' | 'monthly' | 'yearly',
   sportFilter: string
 ) {
-  let timeFilter: string;
+  // Calculate the start date based on the period
+  const now = new Date();
+  let startDate = new Date();
   
   switch (period) {
     case 'weekly':
-      timeFilter = 'now() - interval \'7 days\'';
+      startDate.setDate(now.getDate() - 7);
       break;
     case 'monthly':
-      timeFilter = 'now() - interval \'30 days\'';
+      startDate.setDate(now.getDate() - 30);
       break;
     case 'yearly':
-      timeFilter = 'now() - interval \'1 year\'';
+      startDate.setFullYear(now.getFullYear() - 1);
       break;
   }
 
@@ -227,14 +232,13 @@ export async function getAnalytics(
     .select(`
       *,
       inventory:inventory_id (
-        uniform_type,
-        sport
+        uniform_type
       )
     `)
-    .gte('created_at', timeFilter);
+    .gte('created_at', startDate.toISOString());
 
   if (sportFilter !== 'all') {
-    query = query.eq('inventory.sport', sportFilter);
+    query = query.eq('sport', sportFilter);
   }
 
   const { data, error } = await query;
@@ -245,7 +249,7 @@ export async function getAnalytics(
 
   // Process data for chart
   const processedData = data.reduce((acc: any[], transaction: any) => {
-    const sport = transaction.inventory.sport;
+    const sport = transaction.sport;
     const type = transaction.type;
 
     const existingEntry = acc.find(item => item.sport === sport);
