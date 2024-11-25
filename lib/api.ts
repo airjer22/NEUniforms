@@ -183,3 +183,84 @@ export async function addInventory(data: {
     }
   }
 }
+
+export async function getTransactionHistory() {
+  const { data, error } = await supabase
+    .from('transactions')
+    .select(`
+      *,
+      inventory:inventory_id (
+        uniform_type,
+        sport,
+        gender
+      )
+    `)
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+}
+
+export async function getAnalytics(
+  period: 'weekly' | 'monthly' | 'yearly',
+  sportFilter: string
+) {
+  let timeFilter: string;
+  
+  switch (period) {
+    case 'weekly':
+      timeFilter = 'now() - interval \'7 days\'';
+      break;
+    case 'monthly':
+      timeFilter = 'now() - interval \'30 days\'';
+      break;
+    case 'yearly':
+      timeFilter = 'now() - interval \'1 year\'';
+      break;
+  }
+
+  let query = supabase
+    .from('transactions')
+    .select(`
+      *,
+      inventory:inventory_id (
+        uniform_type,
+        sport
+      )
+    `)
+    .gte('created_at', timeFilter);
+
+  if (sportFilter !== 'all') {
+    query = query.eq('inventory.sport', sportFilter);
+  }
+
+  const { data, error } = await query;
+
+  if (error) {
+    throw error;
+  }
+
+  // Process data for chart
+  const processedData = data.reduce((acc: any[], transaction: any) => {
+    const sport = transaction.inventory.sport;
+    const type = transaction.type;
+
+    const existingEntry = acc.find(item => item.sport === sport);
+    if (existingEntry) {
+      existingEntry[type === 'borrow' ? 'borrowed' : 'returned']++;
+    } else {
+      acc.push({
+        sport,
+        borrowed: type === 'borrow' ? 1 : 0,
+        returned: type === 'return' ? 1 : 0,
+      });
+    }
+
+    return acc;
+  }, []);
+
+  return processedData;
+}

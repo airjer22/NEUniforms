@@ -7,13 +7,15 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { uniformTypes, sports, genders } from "@/lib/uniform-types";
 import { UniformIcon } from "@/components/uniform-icon";
 
+interface FormData {
+  uniformType: string;
+  sport: string;
+  gender: string;
+}
+
 interface UniformTypeSelectionProps {
-  formData: {
-    uniformType: string;
-    sport: string;
-    gender: string;
-  };
-  updateFormData: (data: Partial<typeof formData>) => void;
+  formData: FormData;
+  updateFormData: (data: Partial<FormData>) => void;
   onNext: () => void;
 }
 

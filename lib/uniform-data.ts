@@ -1,33 +1,32 @@
-import { ShirtIcon, Shirt2Icon, GraduationCapIcon, TieIcon } from "lucide-react";
-
 export const uniformTypes = [
   {
-    id: "shirt",
-    name: "School Shirt",
-    icon: <ShirtIcon className="h-6 w-6" />,
+    id: "tshirt",
+    name: "Circle Neck T-Shirt",
+    iconName: "tshirt" as const,
   },
   {
-    id: "pants",
-    name: "School Pants",
-    icon: <Shirt2Icon className="h-6 w-6" />,
+    id: "basketball",
+    name: "Basketball Singlet",
+    iconName: "basketball" as const,
   },
   {
-    id: "tie",
-    name: "School Tie",
-    icon: <TieIcon className="h-6 w-6" />,
+    id: "afl",
+    name: "AFL Singlet",
+    iconName: "afl" as const,
   },
   {
-    id: "graduation",
-    name: "Graduation Gown",
-    icon: <GraduationCapIcon className="h-6 w-6" />,
+    id: "netball",
+    name: "Netball Dress/Shirt",
+    iconName: "netball" as const,
   },
-];
-
-export const uniformSizes = [
-  { value: "xs", label: "Extra Small (XS)" },
-  { value: "s", label: "Small (S)" },
-  { value: "m", label: "Medium (M)" },
-  { value: "l", label: "Large (L)" },
-  { value: "xl", label: "Extra Large (XL)" },
-  { value: "2xl", label: "Double XL (2XL)" },
+  {
+    id: "athletic",
+    name: "Athletic Singlets",
+    iconName: "athletic" as const,
+  },
+  {
+    id: "rugby",
+    name: "Rugby Jerseys",
+    iconName: "rugby" as const,
+  },
 ];

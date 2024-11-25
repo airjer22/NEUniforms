@@ -11,15 +11,17 @@ import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { schools } from "@/lib/schools";
 
+interface FormData {
+  name: string;
+  email: string;
+  school: string;
+  quantity: number;
+  returnDate: Date;
+}
+
 interface BorrowerDetailsProps {
-  formData: {
-    name: string;
-    email: string;
-    school: string;
-    quantity: number;
-    returnDate: Date;
-  };
-  updateFormData: (data: Partial<typeof formData>) => void;
+  formData: FormData;
+  updateFormData: (data: Partial<FormData>) => void;
   onNext: () => void;
   onPrev: () => void;
 }
