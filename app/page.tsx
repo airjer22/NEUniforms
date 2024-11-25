@@ -23,7 +23,7 @@ export default function Home() {
 
         <div className="w-64 h-64 relative mb-12">
           <Image
-            src="/northern-eagles-logo.png"
+            src="public/northern-eagles-logo.png"
             alt="Northern Eagles Logo"
             fill
             style={{ objectFit: 'contain' }}
