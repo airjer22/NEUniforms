@@ -4,6 +4,7 @@ import { ShirtIcon, RefreshCwIcon, ShieldIcon } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import Link from "next/link";
 import Image from "next/image";
+import eagleLogo from '@/public/northern-eagles-logo.png';
 
 export default function Home() {
   return (
@@ -23,7 +24,7 @@ export default function Home() {
 
         <div className="w-64 h-64 relative mb-12">
           <Image
-            src="/northern-eagles-logo.png"
+            src={eagleLogo}
             alt="Northern Eagles Logo"
             fill
             priority
