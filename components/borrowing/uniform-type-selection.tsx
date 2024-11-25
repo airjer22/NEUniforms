@@ -50,8 +50,8 @@ export function UniformTypeSelection({
                   htmlFor={type.id}
                   className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-background p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary cursor-pointer"
                 >
-                  <UniformIcon iconName={type.iconName} className="h-6 w-6" />
-                  <div className="text-sm font-medium mt-2">{type.name}</div>
+                  <UniformIcon iconName={type.iconName} />
+                  <div className="text-sm font-medium mt-4">{type.name}</div>
                 </Label>
               </div>
             ))}
