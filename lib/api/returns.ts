@@ -38,7 +38,7 @@ export async function processUniformReturn(submission: ReturnSubmission) {
       .update({
         status: 'returned',
         actual_return_date: returnDate.toISOString(),
-        return_condition: condition.status,
+        return_condition: condition.status === 'no-issues' ? 'no-issues' : 'has-issues',
         return_notes: condition.notes,
         updated_at: new Date().toISOString()
       })

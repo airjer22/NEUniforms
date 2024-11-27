@@ -31,7 +31,7 @@ export function UniformCondition({
 
   const handleStatusChange = (value: string) => {
     setCondition({
-      status: value,
+      status: value as 'no-issues' | 'has-issues',
       notes: value === "no-issues" ? "" : condition.notes,
     });
   };
