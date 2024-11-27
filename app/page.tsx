@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ShirtIcon, RefreshCwIcon, ShieldIcon } from "lucide-react";
-import { ThemeToggle } from "@/components/theme-toggle";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -9,11 +8,6 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-gradient-to-b from-background to-muted">
       <div className="container mx-auto px-4 py-8 flex flex-col items-center">
-        {/* Theme Toggle in the top-right corner */}
-        <div className="absolute top-4 right-4">
-          <ThemeToggle />
-        </div>
-
         <h1 className="text-4xl font-bold text-center mb-4">
           Northern Eagles District
         </h1>
@@ -25,8 +19,8 @@ export default function Home() {
           <Image
             src="/northern-eagles-logo.png"
             alt="Northern Eagles Logo"
-            width={256}  // Explicit width
-            height={256} // Explicit height
+            width={256}
+            height={256}
             priority
             style={{
               objectFit: 'contain',

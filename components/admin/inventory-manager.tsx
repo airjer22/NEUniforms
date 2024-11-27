@@ -25,6 +25,7 @@ import { EditInventoryDialog } from "./edit-inventory-dialog";
 import { DeleteInventoryDialog } from "./delete-inventory-dialog";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { supabase } from "@/lib/supabase";
+import { useTheme } from "next-themes";
 
 type InventoryItem = {
   id: string;
@@ -34,6 +35,7 @@ type InventoryItem = {
 };
 
 export function InventoryManager() {
+  const { theme } = useTheme();
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [inventory, setInventory] = useState<InventoryItem[]>([]);
@@ -159,7 +161,7 @@ export function InventoryManager() {
         <div>
           <CardTitle>Current Inventory</CardTitle>
           <CardDescription>
-            Manage your uniform inventory and stock levels
+            Manage uniform inventory and stock levels
           </CardDescription>
         </div>
         <div className="flex gap-2">
@@ -208,7 +210,7 @@ export function InventoryManager() {
               />
               <Bar 
                 dataKey="onLoan" 
-                fill="hsl(0 0% 0%)" 
+                fill={theme === 'dark' ? 'hsl(0 0% 100%)' : 'hsl(0 0% 0%)'} 
                 name="On Loan"
                 radius={[4, 4, 0, 0]}
               />
