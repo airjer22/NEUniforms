@@ -38,11 +38,25 @@ CREATE TABLE transactions (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc', NOW())
 );
 
+-- Create maintenance queue table
+CREATE TABLE maintenance_queue (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  inventory_id UUID NOT NULL REFERENCES inventory(id),
+  quantity INTEGER NOT NULL,
+  condition_status VARCHAR NOT NULL,
+  notes TEXT,
+  priority VARCHAR NOT NULL DEFAULT 'normal',
+  status VARCHAR NOT NULL DEFAULT 'pending',
+  processor_notes TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc', NOW()),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc', NOW()),
+  completed_at TIMESTAMP WITH TIME ZONE
+);
+
 -- Create indexes
 CREATE INDEX idx_inventory_uniform_type ON inventory(uniform_type);
 CREATE INDEX idx_transactions_inventory_id ON transactions(inventory_id);
 CREATE INDEX idx_transactions_status ON transactions(status);
-CREATE INDEX idx_transactions_borrower_email ON transactions(borrower_email);
 
 -- Create function to update timestamps
 CREATE OR REPLACE FUNCTION update_updated_at_column()
@@ -71,9 +85,12 @@ ALTER TABLE transactions ENABLE ROW LEVEL SECURITY;
 -- Create policies for inventory
 CREATE POLICY "Enable read access for all users" ON inventory
   FOR SELECT USING (true);
-
-CREATE POLICY "Enable write access for authenticated users only" ON inventory
-  FOR ALL USING (auth.role() = 'authenticated');
+  
+CREATE POLICY "Enable insert for all users" ON inventory
+  FOR INSERT WITH CHECK (true);
+  
+CREATE POLICY "Enable update for all users" ON inventory
+  FOR UPDATE USING (true);
 
 -- Create policies for transactions
 CREATE POLICY "Enable read access for all users" ON transactions
@@ -81,6 +98,3 @@ CREATE POLICY "Enable read access for all users" ON transactions
 
 CREATE POLICY "Enable write access for all users" ON transactions
   FOR INSERT WITH CHECK (true);
-
-CREATE POLICY "Enable update for authenticated users only" ON transactions
-  FOR UPDATE USING (auth.role() = 'authenticated');
