@@ -2,9 +2,8 @@ import { supabase } from '../supabase';
 import { toast } from 'sonner';
 
 export type ReturnCondition = {
-  status: 'good' | 'damaged' | 'needs-cleaning';
+  status: 'no-issues' | 'has-issues';
   notes: string;
-  requiresInspection?: boolean;
 };
 
 export type ReturnSubmission = {
@@ -62,7 +61,7 @@ export async function processUniformReturn(submission: ReturnSubmission) {
     }
 
     // If condition requires inspection, create maintenance record
-    if (condition.requiresInspection || condition.status !== 'good') {
+    if (condition.status === 'has-issues') {
       const { error: maintenanceError } = await supabase
         .from('maintenance_queue')
         .insert({
@@ -70,7 +69,7 @@ export async function processUniformReturn(submission: ReturnSubmission) {
           quantity: transaction.quantity,
           condition_status: condition.status,
           notes: condition.notes,
-          priority: condition.status === 'damaged' ? 'high' : 'normal'
+          priority: 'normal'
         });
 
       if (maintenanceError) {

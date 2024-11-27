@@ -27,9 +27,8 @@ export default function ReturnPage() {
   const [step, setStep] = useState(1);
   const [selectedBorrowing, setSelectedBorrowing] = useState<BorrowingRecord | null>(null);
   const [condition, setCondition] = useState<ReturnCondition>({
-    status: "good",
+    status: "no-issues",
     notes: "",
-    requiresInspection: false,
   });
 
   const nextStep = () => setStep((prev) => prev + 1);

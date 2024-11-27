@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Checkbox } from "@/components/ui/checkbox";
 import { BorrowingRecord } from "@/app/return/page";
 import { ReturnCondition } from "@/lib/api/returns";
 
@@ -33,8 +32,7 @@ export function UniformCondition({
   const handleStatusChange = (value: string) => {
     setCondition({
       status: value,
-      notes: value === "good" ? "" : condition.notes,
-      requiresInspection: value !== "good",
+      notes: value === "no-issues" ? "" : condition.notes,
     });
   };
 
@@ -49,31 +47,14 @@ export function UniformCondition({
             onValueChange={handleStatusChange}
           >
             <div className="flex items-center space-x-2">
-              <RadioGroupItem value="good" id="good" />
-              <Label htmlFor="good">Good condition</Label>
+              <RadioGroupItem value="no-issues" id="no-issues" />
+              <Label htmlFor="no-issues">Returning without issues</Label>
             </div>
             <div className="flex items-center space-x-2">
-              <RadioGroupItem value="damaged" id="damaged" />
-              <Label htmlFor="damaged">Damaged</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="needs-cleaning" id="needs-cleaning" />
-              <Label htmlFor="needs-cleaning">Needs cleaning</Label>
+              <RadioGroupItem value="has-issues" id="has-issues" />
+              <Label htmlFor="has-issues">Returning with issues</Label>
             </div>
           </RadioGroup>
-        </div>
-
-        <div className="flex items-center space-x-2">
-          <Checkbox
-            id="requires-inspection"
-            checked={condition.requiresInspection}
-            onCheckedChange={(checked) =>
-              setCondition({ ...condition, requiresInspection: !!checked })
-            }
-          />
-          <Label htmlFor="requires-inspection">
-            Requires detailed inspection
-          </Label>
         </div>
 
         <div className="space-y-2">
@@ -86,7 +67,7 @@ export function UniformCondition({
               setCondition({ ...condition, notes: e.target.value })
             }
             className="min-h-[100px]"
-            disabled={condition.status === "good"}
+            disabled={condition.status === "no-issues"}
           />
         </div>
       </div>
@@ -97,7 +78,7 @@ export function UniformCondition({
         </Button>
         <Button 
           type="submit" 
-          disabled={!condition.status || (condition.status !== "good" && !condition.notes)}
+          disabled={!condition.status || (condition.status === "has-issues" && !condition.notes)}
         >
           Next Step
         </Button>

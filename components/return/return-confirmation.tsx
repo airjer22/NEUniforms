@@ -69,7 +69,7 @@ export function ReturnConfirmation({
             <div>
               <div className="text-sm text-muted-foreground">Return Status</div>
               <div className="font-medium">
-                {condition.status === "good" ? "Good Condition" : condition.status === "damaged" ? "Damaged" : "Needs Cleaning"}
+                {condition.status === "no-issues" ? "No Issues" : "Has Issues"}
               </div>
             </div>
           </div>
