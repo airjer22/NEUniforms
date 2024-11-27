@@ -15,6 +15,7 @@ interface ReturnConfirmationProps {
   condition: {
     status: string;
     notes: string;
+    requiresInspection?: boolean;
   };
   onPrev: () => void;
 }

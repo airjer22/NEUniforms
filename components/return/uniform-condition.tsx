@@ -12,8 +12,9 @@ interface UniformConditionProps {
   condition: {
     status: string;
     notes: string;
+    requiresInspection?: boolean;
   };
-  setCondition: (condition: { status: string; notes: string }) => void;
+  setCondition: (condition: { status: string; notes: string; requiresInspection?: boolean }) => void;
   onNext: () => void;
   onPrev: () => void;
 }
@@ -35,7 +36,7 @@ export function UniformCondition({
   const handleStatusChange = (value: string) => {
     setCondition({
       status: value,
-      notes: value === "good" ? "" : condition.notes,
+      notes: value === "good" ? "" : condition.notes || "",
       requiresInspection: value !== "good"
     });
   };

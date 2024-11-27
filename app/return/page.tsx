@@ -27,6 +27,7 @@ export default function ReturnPage() {
   const [condition, setCondition] = useState({
     status: "",
     notes: "",
+    requiresInspection: false
   });
 
   const nextStep = () => setStep((prev) => prev + 1);
