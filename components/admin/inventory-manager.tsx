@@ -17,10 +17,12 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Loader2, Plus, RefreshCw } from "lucide-react";
+import { Loader2, Plus, RefreshCw, Pencil, Trash2 } from "lucide-react";
 import { getInventoryStats } from "@/lib/api";
 import { toast } from "sonner";
 import { AddInventoryDialog } from "./add-inventory-dialog";
+import { EditInventoryDialog } from "./edit-inventory-dialog";
+import { DeleteInventoryDialog } from "./delete-inventory-dialog";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { supabase } from "@/lib/supabase";
 
@@ -35,7 +37,10 @@ export function InventoryManager() {
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [inventory, setInventory] = useState<InventoryItem[]>([]);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<InventoryItem | null>(null);
 
   const loadInventory = async () => {
     try {
@@ -103,12 +108,34 @@ export function InventoryManager() {
 
   const handleInventoryAdded = async () => {
     await loadInventory();
-    setIsDialogOpen(false);
+    setIsAddDialogOpen(false);
+  };
+
+  const handleInventoryEdited = async () => {
+    await loadInventory();
+    setIsEditDialogOpen(false);
+    setSelectedItem(null);
+  };
+
+  const handleInventoryDeleted = async () => {
+    await loadInventory();
+    setIsDeleteDialogOpen(false);
+    setSelectedItem(null);
   };
 
   const handleRefresh = async () => {
     setIsRefreshing(true);
     await loadInventory();
+  };
+
+  const handleEdit = (item: InventoryItem) => {
+    setSelectedItem(item);
+    setIsEditDialogOpen(true);
+  };
+
+  const handleDelete = (item: InventoryItem) => {
+    setSelectedItem(item);
+    setIsDeleteDialogOpen(true);
   };
 
   const chartData = inventory.map(item => ({
@@ -144,7 +171,7 @@ export function InventoryManager() {
           >
             <RefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
           </Button>
-          <Button onClick={() => setIsDialogOpen(true)}>
+          <Button onClick={() => setIsAddDialogOpen(true)}>
             <Plus className="h-4 w-4 mr-2" />
             Add Uniforms
           </Button>
@@ -202,8 +229,9 @@ export function InventoryManager() {
               <TableRow>
                 <TableHead>Uniform Type</TableHead>
                 <TableHead className="text-right">Total Quantity</TableHead>
-                <TableHead className="text-right">Available</TableHead>
                 <TableHead className="text-right">On Loan</TableHead>
+                <TableHead className="text-right">Available</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -211,13 +239,32 @@ export function InventoryManager() {
                 <TableRow key={item.id}>
                   <TableCell>{item.uniform_type}</TableCell>
                   <TableCell className="text-right">{item.total_quantity}</TableCell>
-                  <TableCell className="text-right">{item.available_quantity}</TableCell>
                   <TableCell className="text-right">{item.total_quantity - item.available_quantity}</TableCell>
+                  <TableCell className="text-right">{item.available_quantity}</TableCell>
+                  <TableCell className="text-right">
+                    <div className="flex justify-end gap-2">
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={() => handleEdit(item)}
+                      >
+                        <Pencil className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={() => handleDelete(item)}
+                        className="text-destructive hover:text-destructive"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </TableCell>
                 </TableRow>
               ))}
               {inventory.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={4} className="text-center py-4 text-muted-foreground">
+                  <TableCell colSpan={5} className="text-center py-4 text-muted-foreground">
                     No inventory items found
                   </TableCell>
                 </TableRow>
@@ -228,10 +275,27 @@ export function InventoryManager() {
       </CardContent>
 
       <AddInventoryDialog 
-        open={isDialogOpen}
-        onOpenChange={setIsDialogOpen}
+        open={isAddDialogOpen}
+        onOpenChange={setIsAddDialogOpen}
         onInventoryAdded={handleInventoryAdded}
       />
+
+      {selectedItem && (
+        <>
+          <EditInventoryDialog
+            open={isEditDialogOpen}
+            onOpenChange={setIsEditDialogOpen}
+            inventory={selectedItem}
+            onInventoryEdited={handleInventoryEdited}
+          />
+          <DeleteInventoryDialog
+            open={isDeleteDialogOpen}
+            onOpenChange={setIsDeleteDialogOpen}
+            inventory={selectedItem}
+            onInventoryDeleted={handleInventoryDeleted}
+          />
+        </>
+      )}
     </Card>
   );
 }
