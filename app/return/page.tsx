@@ -9,6 +9,8 @@ import { BorrowerSearch } from "@/components/return/borrower-search";
 import { UniformCondition } from "@/components/return/uniform-condition";
 import { ReturnConfirmation } from "@/components/return/return-confirmation";
 
+import { ReturnCondition } from "@/lib/api/returns";
+
 export type BorrowingRecord = {
   id: string;
   uniformType: string;
@@ -24,10 +26,10 @@ export type BorrowingRecord = {
 export default function ReturnPage() {
   const [step, setStep] = useState(1);
   const [selectedBorrowing, setSelectedBorrowing] = useState<BorrowingRecord | null>(null);
-  const [condition, setCondition] = useState({
-    status: "",
+  const [condition, setCondition] = useState<ReturnCondition>({
+    status: "good",
     notes: "",
-    requiresInspection: false
+    requiresInspection: false,
   });
 
   const nextStep = () => setStep((prev) => prev + 1);

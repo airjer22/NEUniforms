@@ -6,15 +6,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { BorrowingRecord } from "@/app/return/page";
+import { ReturnCondition } from "@/lib/api/returns";
 
 interface UniformConditionProps {
   borrowing: BorrowingRecord;
-  condition: {
-    status: string;
-    notes: string;
-    requiresInspection?: boolean;
-  };
-  setCondition: (condition: { status: string; notes: string; requiresInspection?: boolean }) => void;
+  condition: ReturnCondition;
+  setCondition: (condition: ReturnCondition) => void;
   onNext: () => void;
   onPrev: () => void;
 }
@@ -36,8 +33,8 @@ export function UniformCondition({
   const handleStatusChange = (value: string) => {
     setCondition({
       status: value,
-      notes: value === "good" ? "" : condition.notes || "",
-      requiresInspection: value !== "good"
+      notes: value === "good" ? "" : condition.notes,
+      requiresInspection: value !== "good",
     });
   };
 

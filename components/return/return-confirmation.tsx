@@ -8,15 +8,11 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { BorrowingRecord } from "@/app/return/page";
 import { schools } from "@/lib/schools";
-import { processReturn } from "@/lib/api";
+import { processUniformReturn, ReturnCondition } from "@/lib/api/returns";
 
 interface ReturnConfirmationProps {
   borrowing: BorrowingRecord;
-  condition: {
-    status: string;
-    notes: string;
-    requiresInspection?: boolean;
-  };
+  condition: ReturnCondition;
   onPrev: () => void;
 }
 
@@ -35,7 +31,11 @@ export function ReturnConfirmation({
   const handleSubmit = async () => {
     setIsSubmitting(true);
     try {
-      await processReturn(borrowing.id, condition);
+      await processUniformReturn({
+        transactionId: borrowing.id,
+        returnDate: new Date(),
+        condition,
+      });
       toast.success("Uniform return processed successfully!");
       router.push("/");
     } catch (error: any) {
@@ -69,7 +69,7 @@ export function ReturnConfirmation({
             <div>
               <div className="text-sm text-muted-foreground">Return Status</div>
               <div className="font-medium">
-                {condition.status === "no-issues" ? "No Issues" : "Has Issues"}
+                {condition.status === "good" ? "Good Condition" : condition.status === "damaged" ? "Damaged" : "Needs Cleaning"}
               </div>
             </div>
           </div>

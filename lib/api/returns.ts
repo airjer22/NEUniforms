@@ -4,7 +4,7 @@ import { toast } from 'sonner';
 export type ReturnCondition = {
   status: 'good' | 'damaged' | 'needs-cleaning';
   notes: string;
-  requiresInspection: boolean;
+  requiresInspection?: boolean;
 };
 
 export type ReturnSubmission = {
