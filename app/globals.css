@@ -46,3 +46,193 @@
   --input: 0 0% 14.9%;
   --ring: 0 72.2% 50.6%;  /* Northern Eagles Red */
 }
+
+/* Dark mode select and dropdown styles */
+.dark [role="listbox"] [role="option"],
+.dark [role="option"],
+.dark .select-item,
+.dark .command-item,
+.dark .dropdown-item {
+  color: hsl(0 0% 100%) !important;
+}
+
+.dark [role="listbox"] [role="option"]:hover,
+.dark [role="listbox"] [role="option"][data-highlighted],
+.dark [role="option"]:hover,
+.dark [role="option"][data-highlighted],
+.dark .select-item:hover,
+.dark .select-item[data-highlighted],
+.dark .command-item:hover,
+.dark .command-item[data-highlighted],
+.dark .dropdown-item:hover,
+.dark .dropdown-item[data-highlighted] {
+  background-color: hsl(var(--accent)) !important;
+  color: hsl(0 0% 0%) !important;
+}
+
+/* Calendar specific styles */
+.dark .rdp {
+  --rdp-cell-size: 40px;
+  --rdp-accent-color: hsl(var(--accent));
+  --rdp-background-color: hsl(var(--accent));
+  --rdp-accent-color-dark: hsl(var(--accent));
+  --rdp-background-color-dark: hsl(var(--accent));
+  margin: 0;
+}
+
+.dark .rdp-day {
+  color: hsl(0 0% 100%);
+}
+
+.dark .rdp-day_selected,
+.dark .rdp-day_selected:focus-visible,
+.dark .rdp-day_selected:hover {
+  color: hsl(0 0% 0%) !important;
+  background-color: hsl(var(--accent)) !important;
+}
+
+.dark .rdp-day:hover:not([disabled]) {
+  color: hsl(0 0% 0%) !important;
+  background-color: hsl(var(--accent)) !important;
+}
+
+.dark .rdp-day_today {
+  color: hsl(var(--primary)) !important;
+  font-weight: bold;
+}
+
+.dark .rdp-day_today:hover:not([disabled]) {
+  color: hsl(0 0% 0%) !important;
+}
+
+.dark .rdp-button:hover:not([disabled]):not(.rdp-day_selected) {
+  color: hsl(0 0% 0%) !important;
+  background-color: hsl(var(--accent)) !important;
+}
+
+/* Uniform type selection styles */
+.dark .uniform-type-label:hover,
+.dark .uniform-type-label.selected {
+  background-color: hsl(var(--accent)) !important;
+  color: hsl(0 0% 0%) !important;
+}
+
+.dark .uniform-type-label:hover .uniform-type-text,
+.dark .uniform-type-label.selected .uniform-type-text {
+  color: hsl(0 0% 0%) !important;
+}
+
+/* Specific overrides for SelectContent */
+.dark .select-content .select-item[data-highlighted] {
+  background-color: hsl(var(--accent)) !important;
+  color: hsl(0 0% 0%) !important;
+}
+
+/* Command dialog specific styles */
+.dark .command-dialog .command-item[data-highlighted] {
+  background-color: hsl(var(--accent)) !important;
+  color: hsl(0 0% 0%) !important;
+}
+
+/* Dropdown content specific styles */
+.dark .dropdown-content .dropdown-item[data-highlighted] {
+  background-color: hsl(var(--accent)) !important;
+  color: hsl(0 0% 0%) !important;
+}
+
+/* Form element selection styles */
+.dark input::selection,
+.dark textarea::selection,
+.dark select::selection {
+  background-color: hsl(var(--primary));
+  color: hsl(0 0% 100%);
+}
+
+.dark input::-moz-selection,
+.dark textarea::-moz-selection,
+.dark select::-moz-selection {
+  background-color: hsl(var(--primary));
+  color: hsl(0 0% 100%);
+}
+
+/* Selected text in dark mode */
+.dark ::selection {
+  background-color: hsl(var(--primary));
+  color: hsl(0 0% 100%);
+}
+
+.dark ::-moz-selection {
+  background-color: hsl(var(--primary));
+  color: hsl(0 0% 100%);
+}
+
+/* Input placeholder styles */
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: hsl(var(--muted-foreground));
+  opacity: 0.7;
+}
+
+/* Focus styles */
+.dark input:focus,
+.dark textarea:focus,
+.dark select:focus {
+  border-color: hsl(var(--ring));
+  outline-color: hsl(var(--ring));
+}
+
+/* Interactive hover states */
+.dark .hover-contrast {
+  @apply transition-colors duration-200;
+  background-color: hsl(220, 13%, 18%);
+  color: hsl(0, 0%, 98%);
+}
+
+.dark .hover-contrast:hover {
+  background-color: hsl(220, 13%, 25%);
+  color: hsl(0, 0%, 0%);
+}
+
+.dark .hover-contrast:active {
+  background-color: hsl(220, 13%, 30%);
+}
+
+/* Status indicators */
+.dark .status-active {
+  background-color: hsl(215, 100%, 25%);
+  color: hsl(215, 100%, 96%);
+}
+
+.dark .status-completed {
+  background-color: hsl(142, 100%, 25%);
+  color: hsl(142, 100%, 96%);
+}
+
+.dark .status-error {
+  background-color: hsl(0, 100%, 25%);
+  color: hsl(0, 100%, 96%);
+}
+
+/* Radix UI specific overrides */
+.dark [data-radix-popper-content-wrapper] [role="option"][data-highlighted] {
+  background-color: hsl(var(--accent)) !important;
+  color: hsl(0 0% 0%) !important;
+}
+
+@keyframes accordion-down {
+  from { height: 0; }
+  to { height: var(--radix-accordion-content-height); }
+}
+
+@keyframes accordion-up {
+  from { height: var(--radix-accordion-content-height); }
+  to { height: 0; }
+}
+
+.animate-accordion-down {
+  animation: accordion-down 0.2s ease-out;
+}
+
+.animate-accordion-up {
+  animation: accordion-up 0.2s ease-out;
+}

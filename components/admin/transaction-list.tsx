@@ -32,10 +32,9 @@ type Transaction = {
   expected_return_date: string;
   actual_return_date: string | null;
   status: 'active' | 'returned' | 'overdue';
+  quantity: number;
   inventory: {
     uniform_type: string;
-    sport: string;
-    gender: string;
   };
 };
 
@@ -98,6 +97,7 @@ export function TransactionList() {
               <TableRow>
                 <TableHead>Type</TableHead>
                 <TableHead>Uniform</TableHead>
+                <TableHead>Quantity</TableHead>
                 <TableHead>Borrower</TableHead>
                 <TableHead>School</TableHead>
                 <TableHead>Date</TableHead>
@@ -109,9 +109,8 @@ export function TransactionList() {
               {filteredTransactions.map((transaction) => (
                 <TableRow key={transaction.id}>
                   <TableCell className="capitalize">{transaction.type}</TableCell>
-                  <TableCell>
-                    {transaction.inventory.uniform_type} ({transaction.inventory.sport})
-                  </TableCell>
+                  <TableCell>{transaction.inventory.uniform_type}</TableCell>
+                  <TableCell>{transaction.quantity}</TableCell>
                   <TableCell>{transaction.borrower_name}</TableCell>
                   <TableCell>{transaction.school}</TableCell>
                   <TableCell>{format(new Date(transaction.created_at), "PP")}</TableCell>
@@ -124,10 +123,10 @@ export function TransactionList() {
                     <span
                       className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ${
                         transaction.status === "active"
-                          ? "bg-blue-50 text-blue-700"
+                          ? "bg-blue-50 text-blue-700 dark:bg-blue-900/50 dark:text-blue-200"
                           : transaction.status === "returned"
-                          ? "bg-green-50 text-green-700"
-                          : "bg-red-50 text-red-700"
+                          ? "bg-green-50 text-green-700 dark:bg-green-900/50 dark:text-green-200"
+                          : "bg-red-50 text-red-700 dark:bg-red-900/50 dark:text-red-200"
                       }`}
                     >
                       {transaction.status}
@@ -137,7 +136,7 @@ export function TransactionList() {
               ))}
               {filteredTransactions.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={7} className="text-center py-4 text-muted-foreground">
+                  <TableCell colSpan={8} className="text-center py-4 text-muted-foreground">
                     No transactions found
                   </TableCell>
                 </TableRow>

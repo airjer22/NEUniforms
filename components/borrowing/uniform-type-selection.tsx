@@ -6,6 +6,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { uniformTypes, sports, genders } from "@/lib/uniform-types";
 import { UniformIcon } from "@/components/uniform-icon";
+import { cn } from "@/lib/utils";
 
 interface FormData {
   uniformType: string;
@@ -50,10 +51,15 @@ export function UniformTypeSelection({
                 />
                 <Label
                   htmlFor={type.id}
-                  className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-background p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary cursor-pointer"
+                  className={cn(
+                    "uniform-type-label flex flex-col items-center justify-between rounded-md border-2 border-muted bg-background p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary cursor-pointer transition-colors",
+                    formData.uniformType === type.id && "selected"
+                  )}
                 >
                   <UniformIcon iconName={type.iconName} />
-                  <div className="text-sm font-medium mt-4">{type.name}</div>
+                  <div className="uniform-type-text text-sm font-medium mt-4 transition-colors">
+                    {type.name}
+                  </div>
                 </Label>
               </div>
             ))}
