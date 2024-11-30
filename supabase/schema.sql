@@ -96,5 +96,20 @@ CREATE POLICY "Enable update for all users" ON inventory
 CREATE POLICY "Enable read access for all users" ON transactions
   FOR SELECT USING (true);
 
-CREATE POLICY "Enable write access for all users" ON transactions
+CREATE POLICY "Enable insert for all users" ON transactions
   FOR INSERT WITH CHECK (true);
+
+CREATE POLICY "Enable update for all users" ON transactions
+  FOR UPDATE USING (true);
+
+-- Create policies for maintenance_queue
+ALTER TABLE maintenance_queue ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Enable read access for all users" ON maintenance_queue
+  FOR SELECT USING (true);
+
+CREATE POLICY "Enable insert for all users" ON maintenance_queue
+  FOR INSERT WITH CHECK (true);
+
+CREATE POLICY "Enable update for all users" ON maintenance_queue
+  FOR UPDATE USING (true);

@@ -22,6 +22,9 @@ import { Loader2 } from "lucide-react";
 import { format } from "date-fns";
 import { getTransactionHistory } from "@/lib/api";
 import { toast } from "sonner";
+import { TransactionDialog } from "./transaction-dialog";
+import { uniformTypes } from "@/lib/uniform-types";
+import { schools } from "@/lib/schools";
 
 type Transaction = {
   id: string;
@@ -38,10 +41,20 @@ type Transaction = {
   };
 };
 
+function getUniformTypeName(type: string): string {
+  return uniformTypes.find(u => u.id === type)?.name || type;
+}
+
+function getSchoolName(value: string): string {
+  return schools.find(school => school.value === value)?.label || value;
+}
+
 export function TransactionList() {
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   useEffect(() => {
     loadTransactions();
@@ -107,12 +120,19 @@ export function TransactionList() {
             </TableHeader>
             <TableBody>
               {filteredTransactions.map((transaction) => (
-                <TableRow key={transaction.id}>
+                <TableRow 
+                  key={transaction.id}
+                  className="cursor-pointer hover:bg-muted/50"
+                  onClick={() => {
+                    setSelectedTransaction(transaction);
+                    setIsDialogOpen(true);
+                  }}
+                >
                   <TableCell className="capitalize">{transaction.type}</TableCell>
-                  <TableCell>{transaction.inventory.uniform_type}</TableCell>
+                  <TableCell>{getUniformTypeName(transaction.inventory.uniform_type)}</TableCell>
                   <TableCell>{transaction.quantity}</TableCell>
                   <TableCell>{transaction.borrower_name}</TableCell>
-                  <TableCell>{transaction.school}</TableCell>
+                  <TableCell>{getSchoolName(transaction.school)}</TableCell>
                   <TableCell>{format(new Date(transaction.created_at), "PP")}</TableCell>
                   <TableCell>
                     {transaction.actual_return_date
@@ -144,6 +164,12 @@ export function TransactionList() {
             </TableBody>
           </Table>
         </div>
+
+        <TransactionDialog
+          transaction={selectedTransaction}
+          open={isDialogOpen}
+          onOpenChange={setIsDialogOpen}
+        />
       </CardContent>
     </Card>
   );

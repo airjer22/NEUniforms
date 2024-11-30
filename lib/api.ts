@@ -331,61 +331,71 @@ export async function getAnalytics(
   period: 'weekly' | 'monthly' | 'yearly',
   sportFilter: string
 ) {
-  // Calculate the start date based on the period
-  const now = new Date();
-  let startDate = new Date();
+  try {
+    // Calculate the start date based on the period
+    const now = new Date();
+    let startDate = new Date();
 
-  switch (period) {
-    case 'weekly':
-      startDate.setDate(now.getDate() - 7);
-      break;
-    case 'monthly':
-      startDate.setDate(now.getDate() - 30);
-      break;
-    case 'yearly':
-      startDate.setFullYear(now.getFullYear() - 1);
-      break;
-  }
+    switch (period) {
+      case 'weekly':
+        startDate.setDate(now.getDate() - 7);
+        break;
+      case 'monthly':
+        startDate.setMonth(now.getMonth() - 1);
+        break;
+      case 'yearly':
+        startDate.setFullYear(now.getFullYear() - 1);
+        break;
+    }
 
-  let query = supabase
-    .from('transactions')
-    .select(`
-      *,
-      inventory:inventory_id (
-        uniform_type
-      )
-    `)
-    .gte('created_at', startDate.toISOString());
+    // Query transactions within the date range
+    const { data: transactions, error } = await supabase
+      .from('transactions')
+      .select(`
+        *,
+        inventory:inventory_id (
+          uniform_type
+        )
+      `)
+      .gte('created_at', startDate.toISOString())
+      .lte('created_at', now.toISOString());
 
-  if (sportFilter !== 'all') {
-    query = query.eq('sport', sportFilter);
-  }
+    if (error) throw error;
 
-  const { data, error } = await query;
+    // Filter by sport if specified
+    const filteredData = sportFilter === 'all' 
+      ? transactions 
+      : transactions.filter(t => t.sport === sportFilter);
 
-  if (error) {
+    // Process data for chart
+    const processedData = filteredData.reduce((acc: any[], transaction: any) => {
+      const sport = transaction.sport;
+      const type = transaction.type;
+
+      const existingEntry = acc.find(item => item.sport === sport);
+      if (existingEntry) {
+        if (type === 'borrow') {
+          existingEntry.borrowed++;
+        }
+        if (transaction.status === 'returned') {
+          existingEntry.returned++;
+        }
+      } else {
+        acc.push({
+          sport,
+          borrowed: type === 'borrow' ? 1 : 0,
+          returned: transaction.status === 'returned' ? 1 : 0,
+        });
+      }
+
+      return acc;
+    }, []);
+
+    // Sort data by sport name
+    return processedData.sort((a: any, b: any) => a.sport.localeCompare(b.sport));
+
+  } catch (error) {
     console.error('Analytics query error:', error);
     throw error;
   }
-
-  // Process data for chart
-  const processedData = data.reduce((acc: any[], transaction: any) => {
-    const sport = transaction.sport;
-    const type = transaction.type;
-
-    const existingEntry = acc.find(item => item.sport === sport);
-    if (existingEntry) {
-      existingEntry[type === 'borrow' ? 'borrowed' : 'returned']++;
-    } else {
-      acc.push({
-        sport,
-        borrowed: type === 'borrow' ? 1 : 0,
-        returned: type === 'return' ? 1 : 0,
-      });
-    }
-
-    return acc;
-  }, []);
-
-  return processedData;
 }

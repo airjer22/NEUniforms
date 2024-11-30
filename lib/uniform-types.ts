@@ -17,7 +17,7 @@ export type Gender = {
 export const uniformTypes: UniformType[] = [
   {
     id: "tshirt",
-    name: "Circle Neck T-Shirt",
+    name: "T-Shirt",
     iconName: "tshirt",
   },
   {
@@ -32,17 +32,17 @@ export const uniformTypes: UniformType[] = [
   },
   {
     id: "netball",
-    name: "Netball Dress/Shirt",
+    name: "Netball Dress",
     iconName: "netball",
   },
   {
     id: "athletic",
-    name: "Athletic Singlets",
+    name: "Athletic Singlet",
     iconName: "athletic",
   },
   {
     id: "rugby",
-    name: "Rugby Jerseys",
+    name: "Rugby Jersey",
     iconName: "rugby",
   },
 ];
@@ -70,4 +70,5 @@ export const sports: Sport[] = [
 export const genders: Gender[] = [
   { value: "boys", label: "Boys" },
   { value: "girls", label: "Girls" },
+  { value: "both", label: "Both" },
 ];

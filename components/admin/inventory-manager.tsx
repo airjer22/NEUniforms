@@ -20,6 +20,7 @@ import { Button } from "@/components/ui/button";
 import { Loader2, Plus, RefreshCw, Pencil, Trash2 } from "lucide-react";
 import { getInventoryStats } from "@/lib/api";
 import { toast } from "sonner";
+import { uniformTypes } from "@/lib/uniform-types";
 import { AddInventoryDialog } from "./add-inventory-dialog";
 import { EditInventoryDialog } from "./edit-inventory-dialog";
 import { DeleteInventoryDialog } from "./delete-inventory-dialog";
@@ -33,6 +34,10 @@ type InventoryItem = {
   total_quantity: number;
   available_quantity: number;
 };
+
+function getUniformTypeName(type: string): string {
+  return uniformTypes.find(u => u.id === type)?.name || type;
+}
 
 export function InventoryManager() {
   const { theme } = useTheme();
@@ -141,7 +146,7 @@ export function InventoryManager() {
   };
 
   const chartData = inventory.map(item => ({
-    name: item.uniform_type,
+    name: getUniformTypeName(item.uniform_type),
     total: item.total_quantity,
     onLoan: item.total_quantity - item.available_quantity,
     available: item.available_quantity
@@ -209,15 +214,15 @@ export function InventoryManager() {
                 radius={[4, 4, 0, 0]}
               />
               <Bar 
-                dataKey="onLoan" 
-                fill={theme === 'dark' ? 'hsl(0 0% 100%)' : 'hsl(0 0% 0%)'} 
-                name="On Loan"
-                radius={[4, 4, 0, 0]}
-              />
-              <Bar 
                 dataKey="available" 
                 fill="hsl(142.1 76.2% 36.3%)" 
                 name="Available"
+                radius={[4, 4, 0, 0]}
+              />
+              <Bar 
+                dataKey="onLoan" 
+                fill={theme === 'dark' ? 'hsl(0 0% 100%)' : 'hsl(0 0% 0%)'} 
+                name="On Loan"
                 radius={[4, 4, 0, 0]}
               />
             </BarChart>
@@ -239,7 +244,7 @@ export function InventoryManager() {
             <TableBody>
               {inventory.map((item) => (
                 <TableRow key={item.id}>
-                  <TableCell>{item.uniform_type}</TableCell>
+                  <TableCell>{getUniformTypeName(item.uniform_type)}</TableCell>
                   <TableCell className="text-right">{item.total_quantity}</TableCell>
                   <TableCell className="text-right">{item.total_quantity - item.available_quantity}</TableCell>
                   <TableCell className="text-right">{item.available_quantity}</TableCell>
