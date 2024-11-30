@@ -328,8 +328,7 @@ export async function getTransactionHistory() {
 }
 
 export async function getAnalytics(
-  period: 'weekly' | 'monthly' | 'yearly',
-  sportFilter: string
+  period: 'weekly' | 'monthly' | 'yearly'
 ) {
   try {
     // Calculate the start date based on the period
@@ -358,21 +357,17 @@ export async function getAnalytics(
         )
       `)
       .gte('created_at', startDate.toISOString())
-      .lte('created_at', now.toISOString());
+      .lte('created_at', now.toISOString())
+      .order('created_at', { ascending: false });
 
     if (error) throw error;
 
-    // Filter by sport if specified
-    const filteredData = sportFilter === 'all' 
-      ? transactions 
-      : transactions.filter(t => t.sport === sportFilter);
-
     // Process data for chart
-    const processedData = filteredData.reduce((acc: any[], transaction: any) => {
-      const sport = transaction.sport;
+    const processedData = transactions.reduce((acc: any[], transaction: any) => {
+      const uniformType = transaction.inventory.uniform_type;
       const type = transaction.type;
 
-      const existingEntry = acc.find(item => item.sport === sport);
+      const existingEntry = acc.find(item => item.uniformType === uniformType);
       if (existingEntry) {
         if (type === 'borrow') {
           existingEntry.borrowed++;
@@ -382,7 +377,7 @@ export async function getAnalytics(
         }
       } else {
         acc.push({
-          sport,
+          uniformType,
           borrowed: type === 'borrow' ? 1 : 0,
           returned: transaction.status === 'returned' ? 1 : 0,
         });
@@ -391,8 +386,8 @@ export async function getAnalytics(
       return acc;
     }, []);
 
-    // Sort data by sport name
-    return processedData.sort((a: any, b: any) => a.sport.localeCompare(b.sport));
+    // Sort data by uniform type name
+    return processedData.sort((a: any, b: any) => a.uniformType.localeCompare(b.uniformType));
 
   } catch (error) {
     console.error('Analytics query error:', error);

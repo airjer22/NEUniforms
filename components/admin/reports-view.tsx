@@ -14,22 +14,21 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import { getAnalytics } from "@/lib/api";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import { sports } from "@/lib/uniform-types";
+import { uniformTypes } from "@/lib/uniform-types";
 
 export function ReportsView() {
   const [isLoading, setIsLoading] = useState(true);
   const [reportType, setReportType] = useState<'weekly' | 'monthly' | 'yearly'>('monthly');
-  const [sportFilter, setSportFilter] = useState('all');
   const [data, setData] = useState<any[]>([]);
 
   useEffect(() => {
     loadAnalytics();
-  }, [reportType, sportFilter]);
+  }, [reportType]);
 
   const loadAnalytics = async () => {
     setIsLoading(true);
     try {
-      const analyticsData = await getAnalytics(reportType, sportFilter);
+      const analyticsData = await getAnalytics(reportType);
       setData(analyticsData);
     } catch (error: any) {
       toast.error(error.message || "Failed to load analytics");
@@ -73,32 +72,38 @@ export function ReportsView() {
                 </SelectContent>
               </Select>
             </div>
-            <div className="space-y-2">
-              <Label>Sport Filter</Label>
-              <Select value={sportFilter} onValueChange={setSportFilter}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select sport" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Sports</SelectItem>
-                  {sports.map((sport) => (
-                    <SelectItem key={sport.value} value={sport.value}>
-                      {sport.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
           </div>
         </div>
 
         <div className="h-[400px] mt-6">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={data}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="sport" />
-              <YAxis />
-              <Tooltip />
+              <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+              <XAxis 
+                dataKey="uniformType" 
+                tickFormatter={(value) => {
+                  const uniformType = uniformTypes.find(u => u.id === value);
+                  return uniformType ? uniformType.name : value;
+                }}
+                className="text-xs"
+                tick={{ fill: 'hsl(var(--foreground))' }}
+              />
+              <YAxis
+                className="text-xs"
+                tick={{ fill: 'hsl(var(--foreground))' }}
+              />
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: 'hsl(var(--background))',
+                  border: '1px solid hsl(var(--border))',
+                  borderRadius: '6px',
+                }}
+                labelStyle={{ color: 'hsl(var(--foreground))' }}
+                labelFormatter={(value) => {
+                  const uniformType = uniformTypes.find(u => u.id === value);
+                  return uniformType ? uniformType.name : value;
+                }}
+              />
               <Bar dataKey="borrowed" fill="hsl(var(--primary))" name="Borrowed" />
               <Bar dataKey="returned" fill="hsl(var(--muted-foreground))" name="Returned" />
             </BarChart>
