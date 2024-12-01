@@ -57,7 +57,7 @@ export function UniformTypeSelection({
                   )}
                 >
                   <UniformIcon iconName={type.iconName} />
-                  <div className="uniform-type-text text-sm font-medium mt-4 transition-colors">
+                  <div className="uniform-type-text text-base font-medium mt-6 transition-colors">
                     {type.name}
                   </div>
                 </Label>

@@ -22,7 +22,7 @@ export function UniformIcon({ iconName, className }: UniformIconProps) {
   if (!imagePath) return null;
   
   return (
-    <div className={`relative w-12 h-12 ${className}`}>
+    <div className={`relative w-24 h-24 ${className}`}>
       <Image
         src={imagePath}
         alt={`${iconName} uniform`}
